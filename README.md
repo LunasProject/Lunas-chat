@@ -22,16 +22,16 @@ Additionally, the `cryptography` library is required. You can install it by runn
 pip install cryptography
 🚀 Installation
 Clone this repository to your local machine:
-
-Bash
+```
+```Bash
 git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
 Navigate into the project directory:
-
-Bash
+```
+```Bash
 cd YOUR_REPO_NAME
 📖 How to use
 The application works on a Host/Client architecture. One computer must create the room (Host) and the other must join it (Client).
-
+```
 1. Starting the Host (Computer 1)
 The Host acts as the listening server.
 
