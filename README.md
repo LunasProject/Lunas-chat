@@ -1,74 +1,107 @@
-Markdown
-# 🛡️ Terminal Chat E2EE
+# Terminal Chat E2EE
 
-A lightweight, asynchronous, and cross-platform (Windows/Linux) terminal chat written in Python. It allows two computers to communicate directly (Peer-to-Peer) both on a local network (LAN) and over the Internet (WAN), ensuring maximum privacy through End-to-End Encryption (E2EE).
+A lightweight peer-to-peer terminal chat written in Python. It lets two computers communicate directly on a LAN or over the Internet, with messages encrypted before they leave each machine.
 
-## ✨ Features
+## Features
 
-* **Cross-platform:** Works perfectly on Windows, Linux, and macOS.
-* **End-to-End Encryption (E2EE):** Messages are encrypted locally before being sent using the `cryptography` library (Fernet/AES algorithm). No one in the middle can read your messages.
-* **Asynchronous:** Receive and read messages in real-time without your typing line being interrupted, thanks to multithreading.
-* **Peer-to-Peer:** No central server. The computers connect directly to each other.
+- Peer-to-peer connection with no central server.
+- End-to-end encrypted messages using `cryptography` and Fernet.
+- Robust TCP message framing, so messages are not corrupted when packets are split or merged.
+- Interactive host/client setup plus optional command-line arguments.
+- Configurable port and nickname.
+- Clean shutdown on `/exit`, peer disconnect, or `Ctrl+C`.
+- Simple terminal commands: `/help`, `/clear`, and `/exit`.
 
----
+## Requirements
 
-## 🛠️ Prerequisites
+- Python 3.10 or newer.
+- The `cryptography` package.
 
-To run this script, you must have **Python 3.x** installed on your system.
-
-Additionally, the `cryptography` library is required. You can install it by running:
+Install the dependency with:
 
 ```bash
 pip install cryptography
-🚀 Installation
-Clone this repository to your local machine:
 ```
-```Bash
-git clone [https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git)
-Navigate into the project directory:
+
+## Quick Start
+
+Run the chat:
+
+```bash
+python chat.py
 ```
-```Bash
-cd YOUR_REPO_NAME
-📖 How to use
-The application works on a Host/Client architecture. One computer must create the room (Host) and the other must join it (Client).
+
+Choose one machine as the host and the other as the client.
+
+### Host
+
+1. Choose `1. Create a room (Host)`.
+2. Enter a nickname and port, or press Enter to use the defaults.
+3. Copy the generated secret key.
+4. Share the key and the host IP address through a trusted channel.
+5. Wait for the client to connect.
+
+### Client
+
+1. Choose `2. Join a room (Client)`.
+2. Enter a nickname and port.
+3. Enter the host IP address or hostname.
+4. Paste the secret key provided by the host.
+5. Start chatting.
+
+## Command-Line Usage
+
+You can skip the interactive menu with arguments.
+
+Start a host:
+
+```bash
+python chat.py --host --nickname Alice --port 5555
 ```
-1. Starting the Host (Computer 1)
-The Host acts as the listening server.
 
-Run the script: python terminal_chat.py
+Connect as a client:
 
-Choose option 1 (Host).
+```bash
+python chat.py --connect 192.168.1.10 --nickname Bob --port 5555 --key YOUR_SECRET_KEY
+```
 
-The script will generate a SECRET KEY and display your local IP address.
+Show all options:
 
-Share the secret key and your IP address with the person you want to chat with (use a secure channel like Signal, WhatsApp, or tell them in person).
+```bash
+python chat.py --help
+```
 
-2. Starting the Client (Computer 2)
-The Client connects to the Host.
+## Chat Commands
 
-Run the script: python terminal_chat.py
+- `/help` shows the available commands.
+- `/clear` clears the terminal.
+- `/exit` closes the chat.
 
-Choose option 2 (Client).
+The words `exit` and `quit` also close the chat.
 
-Enter the Host's IP address.
+## Internet Connections
 
-Paste the SECRET KEY provided by the Host.
+For connections outside the same LAN, the host usually needs to configure port forwarding on the router:
 
-Start chatting!
+1. Forward TCP port `5555`, or the custom port you selected, to the host machine.
+2. Give the client your public IP address instead of your local LAN address.
+3. Keep the secret key private and send it only through a trusted channel.
 
-🌍 Connection over the Internet (WAN)
-If you and your friend are not on the same Wi-Fi/LAN network, the Host will need to perform a quick configuration on their router:
+Firewall rules may also need to allow inbound TCP connections on the selected port.
 
-Port Forwarding: The Host must access their router settings and open TCP port 5555 (or whichever port is configured in the script), forwarding it to their local IP address.
+## Security Notes
 
-Public IP: The Host must provide the Client with their Public IP (easily found by searching "What is my IP" on Google) instead of the local IP.
+Messages are encrypted locally with a shared Fernet key. The key exchange still happens outside the program, so the security of the chat depends on sharing that key through a trusted channel.
 
-The Client will enter the Host's Public IP to connect.
+If someone obtains the secret key, they can decrypt messages for that session.
 
-🔒 Security and Privacy
-The key exchange in this basic version happens out-of-band (outside the script). Make sure to send the key generated by the Host to the Client through an already secure communication channel.
+## Troubleshooting
 
-If the key is compromised, the encryption loses its effectiveness.
+- `Address already in use`: choose another port or close the program using that port.
+- `Connection refused`: verify that the host is running and the IP/port are correct.
+- `Timed out`: check firewall rules, router port forwarding, and network reachability.
+- `A message could not be decrypted`: both peers are not using the same secret key.
 
-📜 License
-This project is licensed under the MIT License. Feel free to use, modify, and distribute it!
+## License
+
+This project is licensed under the MIT License.
